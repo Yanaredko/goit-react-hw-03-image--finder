@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'; 
 import "../index.css"
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
@@ -75,6 +76,13 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  images: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  showModal: PropTypes.bool.isRequired,
+  modalImage: PropTypes.string.isRequired,
+};
 
 export default App;
 

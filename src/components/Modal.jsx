@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types'; 
 import "../index.css";
 
 const Modal = ({ src, alt, onClose }) => {
@@ -23,6 +24,12 @@ const Modal = ({ src, alt, onClose }) => {
       </div>
     </div>
   );
+};
+
+Modal.propTypes = {
+  src: PropTypes.string.isRequired, 
+  alt: PropTypes.string.isRequired, 
+  onClose: PropTypes.func.isRequired, 
 };
 
 export default Modal;

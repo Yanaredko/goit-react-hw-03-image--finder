@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import "../index.css";
 
 const Button = ({ onClick, isHidden }) => (
@@ -11,5 +12,10 @@ const Button = ({ onClick, isHidden }) => (
     Load more
   </button>
 );
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired, 
+  isHidden: PropTypes.bool.isRequired, 
+};
 
 export default Button;
