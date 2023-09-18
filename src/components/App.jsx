@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import "../index.css"
+// import PropTypes from 'prop-types';
+import '../index.css';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import ImageGalleryItem from './ImageGalleryItem';
@@ -17,12 +17,15 @@ class App extends Component {
     isLoading: false,
     showModal: false,
     modalImage: '',
-    isLoadingMore: false, 
+    isLoadingMore: false,
     noMoreImages: false,
+    totalHits: 0, 
   };
 
   handleSearch = (query) => {
-    this.setState({ query, images: [], page: 1, noMoreImages: false }, this.loadImages);
+    this.setState({ query, images: [], page: 1, noMoreImages: false }, () => {
+      this.loadImages();
+    });
   };
 
   loadImages = () => {
@@ -31,7 +34,7 @@ class App extends Component {
     if (isLoadingMore || noMoreImages) {
       this.setState((prevState) => ({
         page: prevState.page + 1,
-        isLoadingMore: false, 
+        isLoadingMore: false,
       }));
       return;
     }
@@ -48,6 +51,7 @@ class App extends Component {
         this.setState((prevState) => ({
           images: [...prevState.images, ...data.hits],
           page: prevState.page + 1,
+          totalHits: data.totalHits, 
         }));
       })
       .catch((error) => console.error(error))
@@ -65,7 +69,7 @@ class App extends Component {
   };
 
   render() {
-    const { images, isLoading, showModal, modalImage, isLoadingMore, noMoreImages } = this.state;
+    const { images, isLoading, showModal, modalImage, isLoadingMore, noMoreImages, totalHits } = this.state;
 
     return (
       <div className="App">
@@ -81,7 +85,7 @@ class App extends Component {
           ))}
         </ImageGallery>
         {isLoading && <Loader />}
-         {images.length > 0 && !isLoading && !isLoadingMore && !noMoreImages && (
+        {images.length > 0 && !isLoading && !isLoadingMore && !noMoreImages && images.length < totalHits && (
           <Button onClick={this.loadImages} />
         )}
         {showModal && (
@@ -92,12 +96,11 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
-  images: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  modalImage: PropTypes.string.isRequired,
-};
+// App.propTypes = {
+//   images: PropTypes.array.isRequired,
+//   isLoading: PropTypes.bool.isRequired,
+//   showModal: PropTypes.bool.isRequired,
+//   modalImage: PropTypes.string.isRequired,
+// };
 
 export default App;
-
