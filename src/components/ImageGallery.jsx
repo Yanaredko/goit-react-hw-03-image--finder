@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import "../index.css";
 
 const ImageGallery = ({ children }) => (
-    <ul className="ImageGallery">{children}</ul>
+  <ul className="ImageGallery">{children}</ul>
 );
 
 ImageGallery.propTypes = {
-  children: PropTypes.node.isRequired, 
+  children: PropTypes.node.isRequired,
 };
 
 export default ImageGallery;
