@@ -22,27 +22,24 @@ class App extends Component {
     showImages: false,
   };
 
-  componentDidMount() {
-  
+  componentDidUpdate(_, prevState) {
+    if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
+      this.loadImages()
+    }
   }
 
   handleSearch = (query) => {
-    this.setState({ query, images: [], page: 1, noMoreImages: false, showImages: false }, () => {
-    
-      this.loadImages();
-    });
+    this.setState({ query, images: [], page: 1 }) 
   };
 
-  loadImages = () => {
-    const { query, page, isLoadingMore, noMoreImages } = this.state;
+  loadMore = () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1
+    }));
+  }
 
-    if (isLoadingMore || noMoreImages) {
-      this.setState((prevState) => ({
-        page: prevState.page + 1,
-        isLoadingMore: false,
-      }));
-      return;
-    }
+  loadImages = () => {
+    const { query, page } = this.state;
 
     if (!query) {
       return; 
@@ -50,7 +47,6 @@ class App extends Component {
 
     this.setState({ isLoading: true });
 
-   
     fetchImages(query, page)
       .then((data) => {
         if (data.hits.length === 0) {
@@ -60,9 +56,7 @@ class App extends Component {
 
         this.setState((prevState) => ({
           images: [...prevState.images, ...data.hits],
-          page: prevState.page + 1,
           totalHits: data.totalHits,
-          showImages: true, 
         }));
       })
       .catch((error) => console.error(error))
@@ -80,12 +74,12 @@ class App extends Component {
   };
 
   render() {
-    const { images, isLoading, showModal, modalImage, isLoadingMore, noMoreImages, totalHits, showImages } = this.state;
+    const { images, isLoading, showModal, modalImage, totalHits } = this.state;
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSearch} />
-        {showImages && (
+        {images.length > 0 && (
           <ImageGallery>
             {images.map((image) => (
               <ImageGalleryItem
@@ -98,8 +92,8 @@ class App extends Component {
           </ImageGallery>
         )}
         {isLoading && <Loader />}
-        {showImages && images.length > 0 && !isLoading && !isLoadingMore && !noMoreImages && images.length < totalHits && (
-          <Button onClick={this.loadImages} />
+        {images.length > 0 && images.length < totalHits && (
+          <Button onClick={this.loadMore} />
         )}
         {showModal && (
           <Modal src={modalImage} alt="" onClose={this.closeModal} />
